@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "UIColor+SZYExtension.h"
 #import "CALayer+SZYExtension.h"
+#import "UIImage+SZYExtension.h"
 
 @interface ViewController ()
 
@@ -25,7 +26,8 @@
     [aView.layer szy_customShadowWithOpacity:0.2 radius:0 offset:CGSizeMake(1, 150)];
     [self.view addSubview:aView];
     
-    
+    CGSize size =  [UIImage szy_getImageSizeWithURL:@""];
+    NSLog(@"size ====== %@", NSStringFromCGSize(size));
     
     
     
