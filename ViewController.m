@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "UIColor+SZYExtension.h"
+#import "CALayer+SZYExtension.h"
 
 @interface ViewController ()
 
@@ -17,6 +19,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    UIView *aView = [[UIView alloc] initWithFrame:CGRectMake(100, 100, 100, 100)];
+    aView.backgroundColor = [UIColor redColor];
+    [aView.layer szy_customShadowWithOpacity:0.2 radius:0 offset:CGSizeMake(1, 150)];
+    [self.view addSubview:aView];
+    
+    
+    
+    
+    
+    
 }
 
 
