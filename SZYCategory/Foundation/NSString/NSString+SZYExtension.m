@@ -10,6 +10,7 @@
 
 @implementation NSString (SZYExtension)
 
+#pragma mark - URLEncoding URLDecoding 
 - (NSString *)szy_URLEncoding{
     NSString * result = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( kCFAllocatorDefault,
                                                                                               (CFStringRef)self,
@@ -18,6 +19,7 @@
                                                                                               kCFStringEncodingUTF8 ));
     return result;
 }
+
 - (NSString *)szy_URLDecoding{
     NSMutableString * string = [NSMutableString stringWithString:self];
     [string replaceOccurrencesOfString:@"+"

@@ -10,6 +10,7 @@
 #import "UIColor+SZYExtension.h"
 #import "CALayer+SZYExtension.h"
 #import "UIImage+SZYExtension.h"
+#import "NSArray+SZYExtension.h"
 
 @interface ViewController ()
 
@@ -28,7 +29,6 @@
     
     CGSize size =  [UIImage szy_getImageSizeWithURL:@""];
     NSLog(@"size ====== %@", NSStringFromCGSize(size));
-    
     
     
     
