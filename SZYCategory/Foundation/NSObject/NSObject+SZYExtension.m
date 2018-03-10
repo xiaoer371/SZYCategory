@@ -8,9 +8,28 @@
 
 #import "NSObject+SZYExtension.h"
 
+
+#pragma mark 确保值的范围
+
+inline NSNumber *SZYMakeNumberInRange(NSNumber *value, NSNumber *minValue, NSNumber *maxValue){
+    value = @(MAX(value.doubleValue, minValue.doubleValue));
+    value = @(MIN(value.doubleValue, maxValue.doubleValue));
+    return value;
+}
+
+
+#pragma mark 判断值是否在范围内
+
+inline BOOL SZYNumberContainedInRange(NSNumber *value, NSNumber *minValue, NSNumber *maxValue){
+    return value.doubleValue >= minValue.doubleValue && value.doubleValue <= maxValue.doubleValue;
+}
+
+
+
+
+
+
 @implementation NSObject (SZYExtension)
-
-
 
 @end
 
