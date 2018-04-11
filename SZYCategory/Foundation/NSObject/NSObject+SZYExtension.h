@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
 
 #pragma mark 确保值的范围
 
@@ -47,3 +48,10 @@ CG_EXTERN BOOL SZYNumberContainedInRange(NSNumber *value, NSNumber *minValue, NS
 - (void)szy_runInGlobalQueue:(dispatch_block_t)block delay:(double)second;
 
 @end
+
+@interface NSObject (Swizzle)
+
++ (BOOL)swizzleMethod:(SEL)originalSelector withMethod:(SEL)swizzledSelector error:(NSError **)error;
+
+@end
+

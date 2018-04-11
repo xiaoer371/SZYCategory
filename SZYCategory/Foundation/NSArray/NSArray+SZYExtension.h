@@ -13,3 +13,8 @@
 
 
 @end
+
+
+@interface NSArray (Crash)
+
+@end
