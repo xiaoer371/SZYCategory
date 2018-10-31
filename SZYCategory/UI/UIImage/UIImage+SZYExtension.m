@@ -156,4 +156,129 @@
 }
 
 
+// 默认的压缩图片算法
++ (NSData *)compressWithMaxLength:(NSUInteger)legth imageData:(NSData *)imageData {
+    
+    if (!imageData) {return nil;}
+    
+    CGFloat maxLen = legth * 1024.0 * 1024.0;
+    if (imageData.length < maxLen) return imageData;
+    
+    UIImage *oriImage = [UIImage imageWithData:imageData];
+    CGFloat targetWH = 1280;
+    CGFloat oriWidth = oriImage.size.width;
+    CGFloat oriHeight = oriImage.size.height;
+    
+    if (targetWH > oriWidth && targetWH > oriHeight) {
+        NSData *newData = [self compressImageWithOriImage:oriImage maxLength:maxLen];
+        return newData;
+    }
+    
+    // 宽高比
+    CGFloat ratio = oriWidth/oriHeight;
+    CGFloat targetH = 0.0;
+    CGFloat targetW = 0.0;
+    // 宽高 都大于1280
+    if (targetWH < oriWidth && targetWH < oriHeight) {
+        // 宽大于高 取较小值(高)等于1280，较大值等比例压缩
+        if (ratio > 1) {
+            targetH = targetWH;
+            targetW = targetWH * ratio;
+        }else{
+            //高大于宽 取较小值(宽)等于1280，较大值等比例压缩
+            targetW = targetWH;
+            targetH = targetWH / ratio;
+        }
+        UIImage *image = [self imageCompressWithSourceimage:oriImage targetHeight:targetH targetWidth:targetW];
+        NSData *newData = UIImageJPEGRepresentation(image, 1);
+        if (newData.length > maxLen) {
+            NSData *newData = [self compressImageWithOriImage:oriImage maxLength:maxLen];
+            return newData;
+        }
+        return newData;
+    }
+    
+    // 以下是图片其中一边大于1280的情况  这个阈值先暂时设置成2
+    if (ratio > 2 ) {
+        // 宽图片  比例大于2的情况  长宽不变，重绘。
+        CGFloat minH = 100;
+        targetW = targetWH * 2;
+        targetH = targetW / ratio;
+        //如果缩放过小 低于100
+        if (targetH < minH) {
+            targetW = minH * ratio;
+            targetH = minH;
+        }
+    } else if (ratio < 0.5){
+        //       长图片
+        CGFloat minW = 100;
+        targetH = targetWH * 2;
+        targetW = targetW * ratio;
+        //如果缩放过小 低于100
+        if (targetW < minW) {
+            targetW = minW;
+            targetH = minW / ratio;
+        }
+    } else if (ratio > 1){
+        //宽大于高 取较大值(宽)等于1280，较小值等比例压缩
+        targetW = targetWH;
+        targetH = targetWH / ratio;
+    } else{
+        // 高大于宽 取较大值(高)等于1280，较小值等比例压缩
+        targetH = targetWH;
+        targetW = targetWH * ratio;
+    }
+    UIImage *image = [self imageCompressWithSourceimage:oriImage targetHeight:targetH targetWidth:targetW];
+    NSData *newData = UIImageJPEGRepresentation(image, 1);
+    if (newData.length > maxLen) {
+        NSData *newData = [self compressImageWithOriImage:oriImage maxLength:maxLen];
+        return newData;
+    }
+    return newData;
+}
+
++ (NSData *)compressImageWithOriImage:(UIImage *)oriImage maxLength:(NSUInteger)length{
+    CGFloat compressionQuality = 1.0;
+    NSData *newData = UIImageJPEGRepresentation(oriImage, compressionQuality);
+    
+    while (newData.length > length && compressionQuality >= 0.2) {
+        compressionQuality -= 0.2;
+        newData = UIImageJPEGRepresentation(oriImage, compressionQuality);
+    }
+    
+    return newData;
+}
+
++ (UIImage *)imageCompressWithSourceimage:(UIImage *)sourceImage
+                             targetHeight:(CGFloat)targetHeight
+                              targetWidth:(CGFloat)targetWidth
+{
+    UIGraphicsBeginImageContext(CGSizeMake(targetWidth, targetHeight));
+    [sourceImage drawInRect:CGRectMake(0,0,targetWidth, targetHeight)];
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+- (UIImage *)getAppLaunchImage {
+    CGSize viewSize = [UIScreen mainScreen].bounds.size;
+    NSString *viewOrientation = nil;
+    if (([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortraitUpsideDown)
+        || ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortrait)) {
+        viewOrientation = @"Portrait";
+    } else {
+        viewOrientation = @"Landscape";
+    }
+    NSString *launchImage = nil;
+    NSArray *imagesDict = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"UILaunchImages"];
+    for (NSDictionary *dict in imagesDict){
+        CGSize imageSize = CGSizeFromString(dict[@"UILaunchImageSize"]);
+        if (CGSizeEqualToSize(imageSize, viewSize) && [viewOrientation isEqualToString:dict[@"UILaunchImageOrientation"]]){
+            launchImage = dict[@"UILaunchImageName"];
+            break;
+        }
+    }
+    return [UIImage imageNamed:launchImage];
+}
+
 @end

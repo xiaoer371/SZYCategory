@@ -16,4 +16,13 @@
 // 修正图片尺寸
 - (UIImage *)szy_fixOrientation;
 
+// 默认的压缩图片算法
+- (UIImage *)compressImage;
+
+
+
+// 获取app 启动页
+- (UIImage *)getAppLaunchImage;
+
+
 @end
