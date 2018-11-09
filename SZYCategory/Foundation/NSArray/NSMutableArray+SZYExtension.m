@@ -57,5 +57,42 @@
     }
 }
 
+@end
+
+@implementation NSMutableArray(QueueOperation)
+
+- (BOOL) isEmpty {
+    return ([self count] <= 0);
+}
+
+- (void) pushBack:(id)object {
+    [self addObject:object];
+}
+
+- (id) popBack {
+    if (![self isEmpty]) {
+        id object = [self lastObject];
+        [self removeObject:object];
+        return object;
+    }
+    return nil;
+}
+
+- (void) pushFront:(id)object{
+    [self insertObject:object atIndex:0];
+}
+
+- (id) popFront {
+    if (![self isEmpty]) {
+        id object = [self firstObject];
+        [self removeObjectAtIndex:0];
+        return object;
+    }
+    return nil;
+}
+
+
+
+
 
 @end
